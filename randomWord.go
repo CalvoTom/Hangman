@@ -2,28 +2,29 @@ package hangman
 
 import (
 	"bufio"
-	"fmt"
-	"log"
+	"math/rand"
 	"os"
 )
 
-func RandomWord() {
-	f, err := os.Open("thermopylae.txt")
+func RandomWord() string {
+	var word string
+	randomWordLine := rand.Intn(10)
 
+	file, err := os.Open("word.txt")
 	if err != nil {
-		log.Fatal(err)
+		panic(err)
 	}
+	defer file.Close()
 
-	defer f.Close()
-
-	scanner := bufio.NewScanner(f)
+	scanner := bufio.NewScanner(file)
+	lineNumber := 0
 
 	for scanner.Scan() {
-
-		fmt.Println(scanner.Text())
+		lineNumber++
+		if lineNumber == randomWordLine {
+			word = scanner.Text()
+			break
+		}
 	}
-
-	if err := scanner.Err(); err != nil {
-		log.Fatal(err)
-	}
+	return word
 }

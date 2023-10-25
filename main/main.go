@@ -3,6 +3,5 @@ package main
 import "hangman"
 
 func main() {
-	// hangman.Drawer()
-	hangman.RandomWord()
+	hangman.Drawer()
 }

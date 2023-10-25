@@ -4,7 +4,7 @@ import (
 	"github.com/nsf/termbox-go"
 )
 
-func DrawWordToGuess(word string) {
+func DrawWordToGuess(hangman *HangManData) {
 	// Taille du carré
 	width, height := 35, 9
 
@@ -25,9 +25,9 @@ func DrawWordToGuess(word string) {
 	termbox.SetCell(25, 8, borderBotomLeft, termbox.ColorDefault, termbox.ColorDefault)
 	termbox.SetCell(59, 8, borderBottomRight, termbox.ColorDefault, termbox.ColorDefault)
 
-	for i, letter := range word {
+	for i, letter := range hangman.Word {
 		termbox.SetCell(i+40, 4, letter, termbox.ColorDefault, termbox.ColorDefault)
 	}
 
-	TbPrint(26, 0, termbox.ColorCyan, termbox.ColorDefault, "\n Mot")
+	TbPrint(26, 0, termbox.ColorCyan, termbox.ColorDefault, "Mot")
 }

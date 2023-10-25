@@ -1,35 +1,18 @@
 package hangman
 
 import (
+	"bufio"
+	"os"
+
 	"github.com/nsf/termbox-go"
 )
 
-func DrawHangman(state int) {
+func DrawHangman(hangman *HangManData) {
 	drawHangmanBox()
-	// switch {
-	// case state == 1:
-	// 	TbPrint(2, 5, termbox.ColorDefault, termbox.ColorDefault, "\n\n\n\n\n\n\n\n ========= ")
-	// case state == 2:
-	// 	TbPrint(2, 5, termbox.ColorDefault, termbox.ColorDefault, "\n|\n|\n|\n|\n|\n ========= ")
-	// case state == 3:
-	// 	TbPrint(2, 5, termbox.ColorDefault, termbox.ColorDefault, "\n   +---+\n       |\n       |\n       |\n       |\n       |\n ========= ")
-	// case state == 4:
-	// 	TbPrint(2, 5, termbox.ColorDefault, termbox.ColorDefault, "\n   +---+\n   |   |\n       |\n       |\n       |\n       |\n ========= ")
-	// case state == 5:
-	// 	TbPrint(2, 5, termbox.ColorDefault, termbox.ColorDefault, "\n   +---+\n   |   |\n   O   |\n       |\n       |\n       |\n ========= ")
-	// case state == 6:
-	// 	TbPrint(2, 5, termbox.ColorDefault, termbox.ColorDefault, "\n   +---+\n   |   |\n   O   |\n   |   |\n       |\n       |\n ========= ")
-	// case state == 7:
-	// 	TbPrint(2, 5, termbox.ColorDefault, termbox.ColorDefault, "\n   +---+\n   |   |\n   O   |\n  /|   |\n       |\n       |\n ========= ")
-	// case state == 8:
-	// 	TbPrint(2, 5, termbox.ColorDefault, termbox.ColorDefault, "\n   +---+\n   |   |\n   O   |\n  /|\\  |\n       |\n       |\n ========= ")
-	// case state == 9:
-	// 	TbPrint(2, 5, termbox.ColorDefault, termbox.ColorDefault, "\n   +---+\n   |   |\n   O   |\n  /|\\  |\n  /    |\n       |\n ========= ")
-	// case state == 10:
-	// 	TbPrint(2, 5, termbox.ColorDefault, termbox.ColorDefault, "\n   +---+\n   |   |\n   O   |\n  /|\\  |\n  / \\  |\n       |\n ========= ")
-	// default:
-
-	// }
+	err := displayDrawingFromFile("hangman.txt", 8, 8, hangman)
+	if err != nil {
+		panic(err)
+	}
 }
 
 func drawHangmanBox() {
@@ -54,4 +37,41 @@ func drawHangmanBox() {
 	termbox.SetCell(24, 26, borderBottomRight, termbox.ColorDefault, termbox.ColorDefault)
 
 	TbPrint(1, 0, termbox.ColorCyan, termbox.ColorDefault, "Hangman")
+}
+
+func displayDrawingFromFile(filename string, startX, startY int, hangman *HangManData) error {
+	file, err := os.Open(filename)
+	if err != nil {
+		return err
+	}
+	defer file.Close()
+
+	scanner := bufio.NewScanner(file)
+	lineNumber := 0
+	lastStop := 0
+
+	for scanner.Scan() {
+		line := scanner.Text()
+		drawLine(startX, startY+lineNumber, line)
+		lineNumber++
+		if lineNumber == hangman.Attempts*7 || hangman.Attempts == 0 {
+			break
+		}
+		if lineNumber == lastStop+7 {
+			startY -= 7
+			lastStop = lineNumber
+			continue
+		}
+	}
+
+	if err := scanner.Err(); err != nil {
+		return err
+	}
+	return nil
+}
+
+func drawLine(x, y int, line string) {
+	for i, ch := range line {
+		termbox.SetCell(x+i, y, ch, termbox.ColorDefault, termbox.ColorDefault)
+	}
 }
