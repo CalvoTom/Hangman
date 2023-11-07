@@ -1,7 +1,9 @@
 package hangman
 
 import (
+	"flag"
 	"log"
+	"os"
 	"strings"
 
 	"github.com/nsf/termbox-go"
@@ -28,20 +30,30 @@ func Drawer() {
 		log.Fatal(err)
 	}
 	defer termbox.Close()
+	file := "words.txt"
+	police := "standard.txt"
 
-	hangman := HangManData{"p__l_t", "poulet", 0}
+	flag.String("letterFile", "default", "File of word to start with")
+	flag.Parse()
+	if len(os.Args[1:]) == 2 {
+		police = os.Args[2]
+	}
+
+	lettersFind, hangman := InitialiseStruc(file)
 	var lettersTried string
-	var lettersFind string
 
 loop:
 	for {
 		termbox.Clear(termbox.ColorDefault, termbox.ColorDefault)
-		DrawWordToGuess(&hangman)
+		DrawWordToGuess(hangman, police)
+		DrawAttempts(hangman)
 		DrawLettersTried(lettersTried)
 		DrawLettersFind(lettersFind)
-		DrawHangman(&hangman)
+		DrawHangman(hangman)
 		termbox.Flush()
-
+		if hangman.Word == hangman.ToFind {
+			break loop
+		}
 		switch ev := termbox.PollEvent(); ev.Type {
 		case termbox.EventKey:
 			if ev.Key == termbox.KeyEsc || hangman.Attempts >= 10 {

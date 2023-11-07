@@ -1,6 +1,8 @@
 package main
 
-import "hangman"
+import (
+	"hangman"
+)
 
 func main() {
 	hangman.Drawer()

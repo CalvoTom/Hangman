@@ -17,7 +17,7 @@ func DrawHangman(hangman *HangManData) {
 
 func drawHangmanBox() {
 	// Taille du carré
-	width, height := 25, 27
+	width, height := 25, 18
 
 	// Coordonnées du coin supérieur gauche du carré
 	x, y := 0, 0
@@ -33,8 +33,8 @@ func drawHangmanBox() {
 	}
 	termbox.SetCell(0, 0, borderTopLeft, termbox.ColorDefault, termbox.ColorDefault)
 	termbox.SetCell(24, 0, borderTopRight, termbox.ColorDefault, termbox.ColorDefault)
-	termbox.SetCell(0, 26, borderBotomLeft, termbox.ColorDefault, termbox.ColorDefault)
-	termbox.SetCell(24, 26, borderBottomRight, termbox.ColorDefault, termbox.ColorDefault)
+	termbox.SetCell(0, 17, borderBotomLeft, termbox.ColorDefault, termbox.ColorDefault)
+	termbox.SetCell(24, 17, borderBottomRight, termbox.ColorDefault, termbox.ColorDefault)
 
 	TbPrint(1, 0, termbox.ColorCyan, termbox.ColorDefault, "Hangman")
 }
@@ -59,6 +59,7 @@ func displayDrawingFromFile(filename string, startX, startY int, hangman *HangMa
 		}
 		if lineNumber == lastStop+7 {
 			startY -= 7
+
 			lastStop = lineNumber
 			continue
 		}

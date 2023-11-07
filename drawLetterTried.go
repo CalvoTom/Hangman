@@ -6,7 +6,7 @@ import (
 
 func DrawLettersTried(letters string) {
 	// Taille du carré
-	width, height := 35, 9
+	width, height := 100, 9
 
 	// Coordonnées du coin supérieur gauche du carré
 	x, y := 25, 18
@@ -20,13 +20,10 @@ func DrawLettersTried(letters string) {
 		termbox.SetCell(x+width-1, y+i, borderHorizontal, termbox.ColorDefault, termbox.ColorDefault)
 	}
 	termbox.SetCell(25, 18, borderTopLeft, termbox.ColorDefault, termbox.ColorDefault)
-	termbox.SetCell(59, 18, borderTopRight, termbox.ColorDefault, termbox.ColorDefault)
+	termbox.SetCell(124, 18, borderTopRight, termbox.ColorDefault, termbox.ColorDefault)
 	termbox.SetCell(25, 26, borderBotomLeft, termbox.ColorDefault, termbox.ColorDefault)
-	termbox.SetCell(59, 26, borderBottomRight, termbox.ColorDefault, termbox.ColorDefault)
+	termbox.SetCell(124, 26, borderBottomRight, termbox.ColorDefault, termbox.ColorDefault)
 
-	for i, letter := range letters {
-		termbox.SetCell(i+27, 22, letter, termbox.ColorDefault, termbox.ColorDefault)
-	}
-
+	TbPrint(27, 22, termbox.ColorDefault, termbox.ColorDefault, letters)
 	TbPrint(26, 18, termbox.ColorCyan, termbox.ColorDefault, "Lettre testé")
 }
