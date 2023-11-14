@@ -2,6 +2,7 @@ package hangman
 
 import (
 	"flag"
+	"fmt"
 	"log"
 	"os"
 	"strings"
@@ -19,38 +20,62 @@ const (
 )
 
 type HangManData struct {
-	Word     string // Word composed of '_', ex: H_ll_
-	ToFind   string // Final word chosen by the program at the beginning. It is the word to find
-	Attempts int    // Number of attempts left
+	Word       string // Word composed of '_', ex: H_ll_
+	ToFind     string // Final word chosen by the program at the beginning. It is the word to find
+	Attempts   int    // Number of attempts left
+	IsASCII    bool
+	Police     string
+	LetterFind string
 }
 
 func Drawer() {
+	var file string
+	var lettersTried string
+	var hangman *HangManData
+
+	flag.String("startWith", "default", "File name to start with")
+	flag.String("letterFile", "default", "File name to choose ASCII")
+	flag.Parse()
+	if len(os.Args[1:]) >= 3 {
+		file = os.Args[1]
+		if os.Args[2] == "--startWith" && os.Args[3] == "save.txt" {
+			hangman = new(HangManData)
+			LoadGame("save.txt", hangman)
+		} else if os.Args[2] == "--letterFile" && (os.Args[3] == "standard.txt" || os.Args[2] == "shadow.txt" || os.Args[2] == "thinkertoy.txt") {
+			hangman = InitialiseStruc(file)
+			hangman.IsASCII = true
+			hangman.Police = os.Args[3]
+			fmt.Println(os.Args[3])
+		} else if os.Args[3] == "default.txt" {
+			hangman = InitialiseStruc(file)
+		}
+	} else if len(os.Args[1:]) == 1 {
+		file = os.Args[1]
+		hangman = InitialiseStruc(file)
+	} else {
+		fmt.Println("Syntax Error")
+		os.Exit(1)
+	}
+
 	err := termbox.Init()
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer termbox.Close()
-	file := "words.txt"
-	police := "standard.txt"
-
-	flag.String("letterFile", "default", "File of word to start with")
-	flag.Parse()
-	if len(os.Args[1:]) == 2 {
-		police = os.Args[2]
-	}
-
-	lettersFind, hangman := InitialiseStruc(file)
-	var lettersTried string
+	termbox.SetInputMode(termbox.InputMouse)
 
 loop:
 	for {
 		termbox.Clear(termbox.ColorDefault, termbox.ColorDefault)
-		DrawWordToGuess(hangman, police)
+		DrawWordToGuess(hangman)
 		DrawAttempts(hangman)
 		DrawLettersTried(lettersTried)
-		DrawLettersFind(lettersFind)
+		DrawLettersFind(hangman.LetterFind)
 		DrawHangman(hangman)
+		DrawButtonsSave()
+		DrawButtonsQuit()
 		termbox.Flush()
+
 		if hangman.Word == hangman.ToFind {
 			break loop
 		}
@@ -64,10 +89,10 @@ loop:
 					for i, letter := range hangman.ToFind {
 						if string(letter) == guess {
 							hangman.Word = ReplaceAtIndex(hangman.Word, letter, i)
-							if strings.Contains(string(lettersFind), guess) {
+							if strings.Contains(string(hangman.LetterFind), guess) {
 								continue
 							} else {
-								lettersFind += guess
+								hangman.LetterFind += guess
 								lettersTried += guess
 							}
 						}
@@ -80,6 +105,14 @@ loop:
 						lettersTried += guess
 					}
 				}
+			}
+		case termbox.EventMouse:
+			if isMouseInsideButton(ev.MouseX, ev.MouseY, 32, 30, "QUIT") {
+				break loop
+			}
+			if isMouseInsideButton(ev.MouseX, ev.MouseY, 26, 30, "SAVE") {
+				Save(hangman)
+				break loop
 			}
 		}
 	}

@@ -2,6 +2,8 @@ package hangman
 
 import (
 	"bufio"
+	"encoding/json"
+	"io/ioutil"
 	"math/rand"
 	"os"
 	"regexp"
@@ -9,6 +11,13 @@ import (
 
 	"github.com/nsf/termbox-go"
 )
+
+func TbPrint(x, y int, fg, bg termbox.Attribute, text string) {
+	for _, c := range text {
+		termbox.SetCell(x, y, c, fg, bg)
+		x++
+	}
+}
 
 func ReplaceAtIndex(in string, r rune, i int) string {
 	out := []rune(in)
@@ -25,17 +34,19 @@ func ReplaceAtIndex2(input string, replacement byte, index int) string {
 	return strings.Join([]string{input[:index], string(replacement), input[index+1:]}, "")
 }
 
-func InitialiseStruc(filename string) (string, *HangManData) {
+func InitialiseStruc(filename string) *HangManData {
 	var hangman *HangManData
 	hangman = new(HangManData)
+
 	RandomWord(hangman, filename)
 	arrayTf := []rune(hangman.ToFind)
 	for i := 0; i < len(arrayTf); i++ {
 		hangman.Word += "_"
 	}
-	lettersFind := HideWord(hangman)
+	hangman.LetterFind = HideWord(hangman)
+	hangman.IsASCII = false
 
-	return lettersFind, hangman
+	return hangman
 }
 
 func RandomWord(hangman *HangManData, filename string) {
@@ -126,4 +137,37 @@ func DrawLine(x, y int, line string) {
 	for i, ch := range line {
 		termbox.SetCell(x+i, y, ch, termbox.ColorDefault, termbox.ColorDefault)
 	}
+}
+
+func Save(hangman *HangManData) {
+	save, err := json.Marshal(hangman)
+	if err != nil {
+		os.Exit(1)
+	}
+
+	file, err := os.Create("save.txt")
+	if err != nil {
+		os.Exit(2)
+	}
+	defer file.Close()
+
+	_, err = file.Write(save)
+	if err != nil {
+		os.Exit(3)
+	}
+}
+
+func LoadGame(file string, hangman *HangManData) {
+	load, err := ioutil.ReadFile(file)
+	if err != nil {
+		os.Exit(4)
+	}
+	err = json.Unmarshal(load, hangman)
+	if err != nil {
+		os.Exit(5)
+	}
+}
+
+func isMouseInsideButton(mouseX, mouseY, buttonX, buttonY int, label string) bool {
+	return mouseX >= buttonX && mouseX < buttonX+len(label) && mouseY == buttonY
 }

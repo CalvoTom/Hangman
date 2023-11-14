@@ -1,0 +1,1 @@
+{"Word":"esca_ier","ToFind":"escalier","Attempts":2,"IsASCII":true,"LetterFind":"scaeri"}
