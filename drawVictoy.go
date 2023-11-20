@@ -6,6 +6,10 @@ import (
 
 func DrawVictory() {
 	termbox.Clear(termbox.ColorDefault, termbox.ColorDefault)
-	TbPrint(15, 5, termbox.ColorDefault, termbox.ColorDefault, "Félicitation !")
+	size := 0
+	for _, letter := range "vicoire" {
+		DisplayASCII("standard.txt", 28+size, 2, letter)
+		size += 11
+	}
 	termbox.Flush()
 }

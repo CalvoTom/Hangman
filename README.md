@@ -31,8 +31,8 @@ Le jeu est  modulable vous pouvez choisir votre bibliothèque de mot ou encore v
 
 | Flags             | Utility                                                                |
 | ----------------- | ------------------------------------------------------------------ |
-| [words.txt] | Runs the program with the word library contained in words.txt, default words.txt |
-| --letterFile [police.txt] | Run the game with the font in [file.txt], the default one is standard.txt |
+| [words.txt] | Runs the program with the word library contained in words.txt |
+| --letterFile [police.txt] | Run the game with the font in [file.txt], default is not in ASCII |
 | --startWith [save.txt] | Restores the game to its last saved state |
 
 

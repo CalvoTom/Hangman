@@ -36,16 +36,15 @@ func Drawer() {
 	flag.String("startWith", "default", "File name to start with")
 	flag.String("letterFile", "default", "File name to choose ASCII")
 	flag.Parse()
-	if len(os.Args[1:]) >= 3 {
+	if os.Args[1] == "--startWith" && os.Args[2] == "save.txt" {
+		hangman = new(HangManData)
+		LoadGame("save.txt", hangman)
+	} else if len(os.Args[1:]) >= 3 {
 		file = os.Args[1]
-		if os.Args[2] == "--startWith" && os.Args[3] == "save.txt" {
-			hangman = new(HangManData)
-			LoadGame("save.txt", hangman)
-		} else if os.Args[2] == "--letterFile" && (os.Args[3] == "standard.txt" || os.Args[2] == "shadow.txt" || os.Args[2] == "thinkertoy.txt") {
+		if os.Args[2] == "--letterFile" && (os.Args[3] == "standard.txt" || os.Args[3] == "shadow.txt" || os.Args[3] == "thinkertoy.txt") {
 			hangman = InitialiseStruc(file)
 			hangman.IsASCII = true
 			hangman.Police = os.Args[3]
-			fmt.Println(os.Args[3])
 		} else if os.Args[3] == "default.txt" {
 			hangman = InitialiseStruc(file)
 		}
@@ -82,6 +81,8 @@ loop:
 		switch ev := termbox.PollEvent(); ev.Type {
 		case termbox.EventKey:
 			if ev.Key == termbox.KeyEsc || hangman.Attempts >= 10 {
+				break loop
+			} else if hangman.Word == hangman.ToFind {
 				break loop
 			} else if IsAlpha(string(ev.Ch)) {
 				guess := string(ev.Ch)

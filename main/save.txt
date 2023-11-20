@@ -1,1 +1,1 @@
-{"Word":"esca_ier","ToFind":"escalier","Attempts":2,"IsASCII":true,"LetterFind":"scaeri"}
+{"Word":"pou_elle","ToFind":"poubelle","Attempts":1,"IsASCII":true,"Police":"shadow.txt","LetterFind":"lopeu"}
