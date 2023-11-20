@@ -1,1 +1,1 @@
-{"Word":"pou_elle","ToFind":"poubelle","Attempts":1,"IsASCII":true,"Police":"shadow.txt","LetterFind":"lopeu"}
+{"Word":"ra__a__ur","ToFind":"radiateur","Attempts":0,"IsASCII":true,"Police":"standard.txt","LetterFind":"uar"}
